@@ -1,0 +1,19 @@
+#Script to change the redshift IP across the hosts file. 
+
+def fun():
+		if 'host_to_add' in open('/etc/hosts').read():
+				print("Entry exists and is shown below...!!")
+				print("++++++++++++++++++++++++++++++++++++++")
+				for line in open("/etc/hosts"):
+					if "host_to_add" in line:
+						print line,
+		else:
+				print("The entry doesn't exists in the server...!!")
+				print("Going to add the entry for redshift...!!")
+				add_redshift()
+print 'We are starting this sample script...!!'
+print '.........+++++...........++++...........'
+def add_redshift():
+	with open("/etc/hosts", "a") as myfile:
+		myfile.write("xxx.xxx.xxx.xxx host_to_add")
+fun()

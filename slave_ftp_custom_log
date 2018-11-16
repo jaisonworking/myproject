@@ -1,0 +1,7 @@
+#Copy the connections on ftp
+
+[ -e /var/log/custom_ftp_log_by_j ] && > /var/log/custom_ftp_log_by_j &&
+date >> /var/log/custom_ftp_log_by_j &&
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> /var/log/custom_ftp_log_by_j &&
+grep ftp /var/log/xferlog | grep -v sftp | awk '{print echo "Time of connecting to server via FTP ====>" $1, $2, $3, $4, echo "Connecting Host ====>",$7, echo "FTP Username ====>",$14}' | sort -n | uniq >> /var/log/custom_ftp_log_by_j &&
+echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++" >> /var/log/custom_ftp_log_by_j

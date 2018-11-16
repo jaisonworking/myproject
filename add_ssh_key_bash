@@ -1,0 +1,73 @@
+#!/bin/bash
+#Created by J for Infrastructure Team
+#function which contains the ssh public key for user infrauser to add in the DC servers and another function to check if key already exists
+#If you want to add your user key, replace the infrauser with your username and add your ssh key to the section shown below.
+##################################################################
+infrauser_keyexist_check()
+{
+if grep -q "******ssh key goes here******infrauser@<serverhostname>" /home/infrauser/.ssh/authorized_keys; then
+	echo " The ssh key already exists and is shown below...!!"
+       grep -i "infrauser" /home/infrauser/.ssh/authorized_keys
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+	echo "Removing this shell script now...!!"
+	rm -fv $0
+	exit
+else
+	echo " The ssh key doesn't exists...!! We will add it...!!"
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+fi 
+}
+###################################################################
+infrauser_pub_key()
+{
+chmod 700 /home/infrauser/.ssh;
+chown infrauser:infrauser /home/infrauser/.ssh;
+echo "******ssh key goes here******infrauser@<serverhostname>" >> /home/infrauser/.ssh/authorized_keys;
+chmod 600 /home/infrauser/.ssh/authorized_keys;
+chown infrauser:infrauser /home/infrauser/.ssh/authorized_keys
+grep -i "infrauser" /home/infrauser/.ssh/authorized_keys ; 
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+ls -l -h /home/infrauser/.ssh/authorized_keys
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+}
+##################################################################
+if [ "$EUID" -ne 0 ]
+  then echo "Please run this script as root"
+  exit
+fi
+##################################################################
+if getent passwd "infrauser" > /dev/null 2>&1; then
+        echo "Yes, the user infrauser exists...!!"
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+else
+	echo "No, the user infrauser does not exist...!!"
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+    useradd infrauser;
+fi
+###################################################################
+if grep -q "infrauser" /etc/sudoers
+then
+echo "The entry already exists in the sudo list. Please see the entry provided below...!!"
+grep -i "infrauser" /etc/sudoers
+else
+echo "The entry doesn't exists..!! Going to add the entry for infrauser to sudo list now...!!"
+echo "infrauser ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
+grep -i "infrauser" /etc/sudoers
+fi
+##################################################################
+    if [ ! -d /home/infrauser/.ssh ]; then
+        echo "Folder to add the ssh key not found ...!!" 
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+	echo "We are going to create the folder and adding the SSH authenticated key now..!!"
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+	mkdir /home/infrauser/.ssh ;
+	infrauser_pub_key;	
+  else
+	echo "The user directory already exists...!! Going to add the SSH key to the authenticated list...!!" 
+	echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+	 infrauser_keyexist_check;
+	 infrauser_pub_key;
+fi
+###################################################################
+echo "This shell script has completed running now...!! Thanks ...!! We will remove script now...!!"
+rm -fv $0

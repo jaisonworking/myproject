@@ -1,0 +1,53 @@
+from collections import defaultdict
+import sys
+import boto3
+import time
+
+print "This script assumes that you do have a working aws cli configured at your end with privileges to list and read the EC2 resources..!!"
+print "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+region = raw_input('Enter the region that you want to show the instance list : [sample : us-east-1] ')
+print "We are going to run this script on " + region + " and this will List Ec2 instance with Tags, IPs, instance type and Launch Time...!!"
+print "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+time.sleep(3)
+# Connect to EC2
+ec2 = boto3.resource('ec2', region)
+
+# Get information for all running instances
+running_instances = ec2.instances.filter(Filters=[{
+    'Name': 'instance-state-name',
+    'Values': ['running']}])
+
+ec2info = defaultdict()
+for instance in running_instances:
+ for nametag in instance.tags:
+  if 'Name'in nametag['Key']:
+   name = nametag['Value']
+ for ctag in instance.tags:
+  if 'Client'in ctag['Key']:
+   client = ctag['Value']
+ for etag in instance.tags:
+  if 'Environment'in etag['Key']:
+   env = etag['Value']
+ for ptag in instance.tags:			
+  if 'ProcessName'in ptag['Key']:
+   pname = ptag['Value']
+			
+    # Add instance info to a dictionary         
+ ec2info[instance.id] = {
+        'Name': name,
+		'Client': client,
+		'Environment': env,
+		'ProcessName': pname,
+        'Type': instance.instance_type,
+        'State': instance.state['Name'],
+        'Private IP': instance.private_ip_address,
+        'Public IP': instance.public_ip_address,
+        'Launch Time': instance.launch_time
+        }
+
+attributes = ['Name', 'Client', 'Environment', 'ProcessName', 'Type', 'State', 'Private IP', 'Public IP', 'Launch Time']
+#attributes = ['Name', 'Private IP']
+for instance_id, instance in ec2info.items():
+    for key in attributes:
+        print("{0}: {1}".format(key, instance[key]))
+    print("------")

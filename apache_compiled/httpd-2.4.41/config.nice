@@ -1,0 +1,13 @@
+#! /bin/sh
+#
+# Created by configure
+
+"./configure" \
+"--enable-ssl" \
+"--with-ssl=/TK/apache/openssl/" \
+"--enable-ssl-staticlib-deps" \
+"--with-mpm=prefork" \
+"--enable-mpms-shared=prefork worker event" \
+"--with-included-apr" \
+"--prefix=/TK/apache/httpd" \
+"$@"

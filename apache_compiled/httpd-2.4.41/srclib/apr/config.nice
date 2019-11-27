@@ -1,0 +1,22 @@
+#! /bin/sh
+#
+# Created by configure
+
+"/root/httpd-2.4.41/srclib/apr/configure" \
+"--disable-option-checking" \
+"--enable-ssl" \
+"--with-ssl=/TK/apache/openssl/" \
+"--enable-ssl-staticlib-deps" \
+"--with-mpm=prefork" \
+"--enable-mpms-shared=prefork worker event" \
+"--with-included-apr" \
+"--cache-file=/dev/null" \
+"--srcdir=/root/httpd-2.4.41/srclib/apr" \
+"--prefix=/TK/apache/httpd" \
+"--exec-prefix=/TK/apache/httpd" \
+"--libdir=/TK/apache/httpd/lib" \
+"--includedir=/TK/apache/httpd/include" \
+"--bindir=/TK/apache/httpd/bin" \
+"--datadir=/TK/apache/httpd" \
+"--with-installbuilddir=/TK/apache/httpd/build" \
+"$@"

@@ -1,0 +1,14 @@
+snapshotid=(
+snap-xxxxxxxxxxxxxxxx
+snap-xxxxxxxxxxxxxxxx
+snap-xxxxxxxxxxxxxxxx
+snap-xxxxxxxxxxxxxxxx
+)
+COUNTER=0
+for (( i=0; i<${#snapshotid[@]}; i++ ));
+do
+                    COUNTER=$((COUNTER+1))
+                                echo "++++";
+                                            echo $COUNTER". Removing the Snapshot with the Snapshot ID: " ${snapshotid[$i]};
+                                                        aws ec2 delete-snapshot --snapshot-id ${snapshotid[$i]};
+                                                done

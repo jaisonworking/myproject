@@ -1,0 +1,4 @@
+for region_name in `aws ec2 describe-regions  --query "Regions[].{Name:RegionName}" --output text` ;
+do echo "Checking the region" $region_name;
+        aws ec2 describe-volumes --filters Name=status,Values=available  --query "Volumes[*].{ID:VolumeId,VolumeState:State}"  --query 'Volumes[?!not_null(Tags[])]' --region $region_name --output table;
+done;

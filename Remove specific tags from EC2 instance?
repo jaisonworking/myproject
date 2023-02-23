@@ -1,0 +1,8 @@
+COUNTER=0
+for instance_id in `aws ec2 describe-instances --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --filters "Name=tag:Name,Values=*<common_name>*"  --output text --region <region_name>`
+do
+let COUNTER++
+printf $COUNTER;
+echo ". Removing the tag for the instance "$instance_id;
+aws ec2 delete-tags --resources $instance_id --tags Key=<Tag_That_needs_Removal>
+done;

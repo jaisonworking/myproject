@@ -1,0 +1,15 @@
+volumeid=(
+vol-xxxxxxxxxxxxxxxxxxx
+vol-xxxxxxxxxxxxxxxxxxx
+vol-xxxxxxxxxxxxxxxxxxx
+vol-xxxxxxxxxxxxxxxxxxx
+vol-xxxxxxxxxxxxxxxxxxx
+)
+COUNTER=0
+for (( i=0; i<${#volumeid[@]}; i++ ));
+do
+            COUNTER=$((COUNTER+1))
+            echo "++++";
+            echo $COUNTER". Removing the volume with the Volume ID: " ${volumeid[$i]};
+            aws ec2 delete-volume --volume-id ${volumeid[$i]};
+    done

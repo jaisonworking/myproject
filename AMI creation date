@@ -1,0 +1,7 @@
+for region_name in `aws ec2 describe-regions  --query "Regions[].{Name:RegionName}" --output text` ;
+do echo "Checking the region" $region_name;
+        echo "Checking the region" $region_name >> $region_name.txt
+        aws ec2 describe-images --region $region_name --owners self --query 'sort_by (Images, &CreationDate)[].{Name: Name, Image: ImageId , CreationDate: CreationDate}[]' --output text |  sed -E 's/\s+/,/g' >> $region_name.txt
+done;
+
+NOTE: The script includes only AMI under the self section.

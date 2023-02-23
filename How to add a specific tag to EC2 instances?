@@ -1,0 +1,8 @@
+COUNTER=0
+for instance_id in `aws ec2 describe-instances --query "Reservations[*].Instances[*].{Instance:InstanceId}"  --filters "Name=tag:Name,Values=*<Common_name>*"  --output text --region <region_name>`
+do
+let COUNTER++
+printf $COUNTER;
+echo ". Setting up tag for the instance "$instance_id;
+aws ec2 create-tags --resources $instance_id --region <region_name>  --tags "Key"="<key_that_needs_to_be_added>","Value"="<value_that_needs_to_be_added>" ;
+done;

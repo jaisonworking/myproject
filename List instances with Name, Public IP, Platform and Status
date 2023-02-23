@@ -1,0 +1,5 @@
+for region in `aws ec2 describe-regions --output text | cut -f4`
+do
+echo -e "\nListing Instances in region:'$region'..."
+    aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Platform:Platform,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name}"  --filters "Name=instance-state-name,Values=running" "Name=tag:Name,Values='*'"  --output table --region $region
+done
